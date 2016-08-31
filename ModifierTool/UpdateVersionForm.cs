@@ -44,8 +44,7 @@ namespace ModifierTool
         }
 
         private void button1_Click(object sender, EventArgs e)
-        {
-            
+        {            
             if (textBox1.Text != "" && textBox2.Text != "")
             {
                 version_temp.VersionName = textBox1.Text;

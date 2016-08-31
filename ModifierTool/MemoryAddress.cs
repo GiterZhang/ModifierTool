@@ -15,14 +15,12 @@ namespace ModifierTool
         [XmlElement]
         public bool IsContainModuleAddr { get; set; }
         [XmlElement]
-        public long Address { get; set; }       
+        public long Address { get; set; }
+        [XmlElement]
+        public long ReadAddress { get; set; }       
         [XmlArray]
-        public List<int> Offsets { get; set; }     
+        public List<int> Offsets { get; set; }
 
-        public IntPtr GetAddress()
-        {
-            return (IntPtr)0;
-        }
         public string GetAddrString(string moduleName = "module")
         {
             string addrString = "";

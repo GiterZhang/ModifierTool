@@ -32,6 +32,5 @@ namespace ModifierTool
         [XmlElement]
         public ValueStringMap ValueStringMap { get;set; }
 
-
     }
 }

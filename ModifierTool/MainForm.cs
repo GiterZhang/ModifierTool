@@ -9,13 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+using System.Security.Cryptography;
 
 namespace ModifierTool
 {
+    public delegate void IOfunction(Stream stream);
     public partial class MainForm : Form
     {
         string filePath;
-        string fileIdentifier = "3dm&nba2k game modifier";
+        string fileIdentifier = "3dm&&nba2k Game Modifier";
 
         ModiferConfig modiferConfig;
 
@@ -35,7 +37,7 @@ namespace ModifierTool
             set
             {
                 filePath = value;
-                this.Text = "3DM&NBA2K Game Modifier Tool" + " - [" + (value == null ? "无标题" : value) + "]";       
+                this.Text = "3DM&NBA2K Game Modifier Tool" + " - [" + (value == null || value == "" ? "无标题" : value) + "]";       
             }
         }
 
@@ -53,6 +55,7 @@ namespace ModifierTool
                 CreateProject();
             }
         }
+
         private bool LoadFile(string fileName)
         {
             try
@@ -60,23 +63,25 @@ namespace ModifierTool
                 if (fileName != null && fileName != "")
                 {
                     StreamReader reader = new StreamReader(fileName);
-                    System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModiferConfig));
-                    modiferConfig = (ModiferConfig)xr.Deserialize(reader);
+                    if (reader != null)
+                    {
+                        System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModiferConfig));
+                        modiferConfig = (ModiferConfig)xr.Deserialize(reader);
 
-                    gameNameTxtbox.Text = modiferConfig.GameName;
-                    processNameTxtbox.Text = modiferConfig.ProcessName;
-                    moduleNameTxtbox.Text = modiferConfig.ModuleName;
-                    reader.Close();
-                    LoadVersions();
-                    return true;
+                        gameNameTxtbox.Text = modiferConfig.GameName;
+                        processNameTxtbox.Text = modiferConfig.ProcessName;
+                        moduleNameTxtbox.Text = modiferConfig.ModuleName;
+
+                        reader.Close();
+                        LoadVersions();
+                        return true;
+                    }                  
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("读取文件失败，已重新创建工程");
-                return false;
+                MessageBox.Show("读取文件失败，已重新创建工程");                
             }
-            
             return false;
         }
         private void CreateProject()
@@ -84,6 +89,10 @@ namespace ModifierTool
             modiferConfig = new ModiferConfig();
             
             modiferConfig.FileIdentifier = fileIdentifier;
+
+            gameNameTxtbox.Text = "GameName";
+            processNameTxtbox.Text = "ProcessName";
+            moduleNameTxtbox.Text = "ModuleName";
 
             modiferConfig.GameName = gameNameTxtbox.Text;
             modiferConfig.ProcessName = processNameTxtbox.Text;
@@ -104,11 +113,16 @@ namespace ModifierTool
 
             if (fileName != null && fileName != "")
             {
-                StreamWriter writer = new System.IO.StreamWriter(fileName);
-                System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModiferConfig));
-                xr.Serialize(writer, modiferConfig);
-                writer.Close();
-                return true;
+                //Stream writer = CryptoFile("w");
+                StreamWriter writer = new StreamWriter(fileName);
+                if (writer != null)
+                {
+                    System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModiferConfig));
+                    xr.Serialize(writer, modiferConfig);
+                    //加密
+                    writer.Close();
+                    return true;
+                }                         
             }
             else
             {
@@ -118,20 +132,43 @@ namespace ModifierTool
                     FileName = fileDialog.FileName;
                     if (FileName != "" && FileName != null)
                     {
-                        SaveFile(FileName);
-                        return true;
+                        return SaveFile(FileName);
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }            
-                
+                }                            
             }
             return false;
+        }
 
-            //判断是否存在多个版本MD5值一样
-            //判断是否有一个版本没有页
+        private Stream CryptoFile(string format)
+        {
+            FileStream fs = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            try
+            {
+                format.ToLower();               
+                byte[] key = System.Text.Encoding.Default.GetBytes(fileIdentifier.ToArray(),0,8);
+                byte[] Iv = System.Text.Encoding.Default.GetBytes(fileIdentifier.ToArray());
+
+                ICryptoTransform transform = new DESCryptoServiceProvider().CreateDecryptor(key,Iv);
+
+                CryptoStream cs;
+                if (format == "r")
+                {
+                    cs = new CryptoStream(fs, transform, CryptoStreamMode.Read);
+                    return cs;
+                }
+                else if(format == "w")
+                {
+                    cs = new CryptoStream(fs, transform, CryptoStreamMode.Write);
+                    return cs;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                fs.Close();
+                return null;
+            }          
         }
 
         private void LoadPages()
@@ -195,6 +232,7 @@ namespace ModifierTool
                 }
             }
         }
+
         private int GetVersionIndex()
         {
             return versionCombox.SelectedIndex;
@@ -250,26 +288,39 @@ namespace ModifierTool
 
         private void deleteVersionBtn_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("确定要删除当前版本吗", "注意：", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (GetVersionIndex() >= 0)
             {
-                var version = modiferConfig.Versions[GetVersionIndex()];
-                if (version != null)
+                if (MessageBox.Show("确定要删除当前版本吗", "注意：", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    modiferConfig.Versions.Remove(version);
-                    LoadVersions();
+                    var version = modiferConfig.Versions[GetVersionIndex()];
+                    if (version != null)
+                    {
+                        modiferConfig.Versions.Remove(version);
+                        LoadVersions();
+                    }
+                    else
+                    {
+                        MessageBox.Show("内部错误");
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("内部错误");
-                }
-            }
+            }            
         }
 
         private void 新建页面ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            modiferConfig.Versions[GetVersionIndex()].Pages.Add(new FunctionPage { Name = "默认页面" });
-            tabPannel.TabPages.Add("默认页面");
-    
+            var newPage = new FunctionPage { Name = "新建页面" };
+            modiferConfig.Versions[GetVersionIndex()].Pages.Add(newPage);
+            tabPannel.TabPages.Add(newPage.Name);    
+        }
+        private void 重命名ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var page = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()];
+            var newName = Interaction.InputBox("输入页面名称", "重命名", page.Name);
+            if (newName != "")
+            {
+                page.Name = newName;
+                tabPannel.SelectedTab.Text = page.Name;
+            }
         }
         private void 刷新页ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -311,7 +362,6 @@ namespace ModifierTool
                 {
                     if (MessageBox.Show("确定要删除[" + item.Name + "]这个元素吗？","注意", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        
                         modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items.Remove(item);                        
                         LoadItems();
                         focusRowIndex = -1;
@@ -421,7 +471,6 @@ namespace ModifierTool
             }
         }
 
-
         private void 新建ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (modiferConfig.Versions != null && modiferConfig.Versions.Count > 0)
@@ -445,7 +494,8 @@ namespace ModifierTool
         {
             if (modiferConfig.Versions != null && modiferConfig.Versions.Count > 0)
             {
-                if (SaveFile(FileName))
+                bool res = SaveFile(FileName);
+                if (res == true)
                 {
                     MessageBox.Show("保存成功！");
                 }
@@ -460,21 +510,17 @@ namespace ModifierTool
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
+        {            
             if (modiferConfig.Versions != null && modiferConfig.Versions.Count > 0)
             {
-                SaveFile(FileName);
-            }
-        }
-
-        private void 重命名ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var page = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()];
-            var newName = Interaction.InputBox("输入页面名称", "重命名", page.Name);
-            if (newName != "")
-            {
-                page.Name = newName;
-                tabPannel.SelectedTab.Text = page.Name;
+                if (FileName != null)
+                {
+                    SaveFile(FileName);
+                }
+                else if (MessageBox.Show("需要保存文档吗？", "注意：", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    SaveFile(FileName);
+                }                
             }
         }
     }

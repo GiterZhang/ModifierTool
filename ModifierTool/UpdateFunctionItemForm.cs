@@ -39,8 +39,7 @@ namespace ModifierTool
                     {
                         this.minValueTxtbox.Text = item.MinValue.ToString();
                     }
-                    
-
+                   
                     this.formStyleCombox.Text = item.FormStyle;
                     this.valueTypeCombox.Text = item.ValueType;
                 }

@@ -15,23 +15,29 @@ namespace ModifierTool
 
         public static string Separator = "=>";
 
-        public Dictionary<string,string> GetMapDictionary()
+        public Dictionary<string,string> GetMap()
         {
-            //处理map
-            return new Dictionary<string, string>();
+            Dictionary<string, string> map = new Dictionary<string, string>();
+            if (Map != null)
+            {
+                foreach (var str in Map)
+                {
+                    var line = str.Split(Separator.ToCharArray());
+                    map.Add(line[0],line[2]);
+                }
+            }
+            return map;
         }
-        public void AddMap(string key,string value)
+        public void FillMap(Dictionary<string,string> objects)
         {
-            if (Map == null)
+            if (objects != null)
             {
                 Map = new List<string>();
-            }
-            if(key != null && value != null)
-                Map.Add(key + Separator + value);
-        }
-        public void ClearMap()
-        {
-            Map = null;
+                foreach (var line in objects)
+                {
+                    Map.Add(line.Key + Separator + line.Value);
+                }
+            }           
         }
         public override string ToString()
         {

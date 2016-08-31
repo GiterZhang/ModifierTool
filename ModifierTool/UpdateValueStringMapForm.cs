@@ -60,13 +60,18 @@ namespace ModifierTool
                 if (textBox1.Text != "")
                 {
                     int index = 1;
-                    map.ClearMap();//清空列表
+                    // map.ClearMap();//清空列表
+                    Dictionary<string, string> map_temp = new Dictionary<string, string>();
                     foreach (var str in textBox1.Lines)
                     {
                         if (CheckStr(str))
                         {
-                            var strs = str.Split(ValueStringMap.Separator.ToArray());
-                            map.AddMap(strs[0], strs[2]);
+                            var line = str.Split(ValueStringMap.Separator.ToArray());
+                            try
+                            {
+                                map_temp.Add(line[0], line[2]);
+                            }
+                            catch { }                            
                         }
                         else
                         {
@@ -75,6 +80,7 @@ namespace ModifierTool
                         }                            
                         index++;
                     }
+                    map.FillMap(map_temp);
                     this.map = map;
                     return true;
                 }
@@ -88,7 +94,6 @@ namespace ModifierTool
         }
         private bool CheckStr(string str)
         {
-            var res = false;
             if (str != null)
             {
                 try
@@ -100,14 +105,18 @@ namespace ModifierTool
 
                         return true;
                     }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 catch (Exception ex)
                 {
                     return false;
-                }
-                
+                }                
             }
-            return res;
+            else
+                return false;
         }
 
         private void button1_Click(object sender, EventArgs e)
