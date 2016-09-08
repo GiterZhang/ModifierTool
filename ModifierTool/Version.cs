@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace ModifierTool
 {
     [XmlType]
-    public class ModiferConfig
+    public class ModifierConfig
     {
         [XmlAttribute]
         public string FileIdentifier { get; set; }

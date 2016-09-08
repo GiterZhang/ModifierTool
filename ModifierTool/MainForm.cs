@@ -19,7 +19,7 @@ namespace ModifierTool
         string filePath;
         string fileIdentifier = "3dm&&nba2k Game Modifier";
 
-        ModiferConfig modiferConfig;
+        ModifierConfig modifierConfig;
 
         int focusRowIndex = -1;
 
@@ -65,12 +65,12 @@ namespace ModifierTool
                     StreamReader reader = new StreamReader(fileName);
                     if (reader != null)
                     {
-                        System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModiferConfig));
-                        modiferConfig = (ModiferConfig)xr.Deserialize(reader);
+                        System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModifierConfig));
+                        modifierConfig = (ModifierConfig)xr.Deserialize(reader);
 
-                        gameNameTxtbox.Text = modiferConfig.GameName;
-                        processNameTxtbox.Text = modiferConfig.ProcessName;
-                        moduleNameTxtbox.Text = modiferConfig.ModuleName;
+                        gameNameTxtbox.Text = modifierConfig.GameName;
+                        processNameTxtbox.Text = modifierConfig.ProcessName;
+                        moduleNameTxtbox.Text = modifierConfig.ModuleName;
 
                         reader.Close();
                         LoadVersions();
@@ -86,17 +86,17 @@ namespace ModifierTool
         }
         private void CreateProject()
         {
-            modiferConfig = new ModiferConfig();
+            modifierConfig = new ModifierConfig();
             
-            modiferConfig.FileIdentifier = fileIdentifier;
+            modifierConfig.FileIdentifier = fileIdentifier;
 
             gameNameTxtbox.Text = "GameName";
             processNameTxtbox.Text = "ProcessName";
             moduleNameTxtbox.Text = "ModuleName";
 
-            modiferConfig.GameName = gameNameTxtbox.Text;
-            modiferConfig.ProcessName = processNameTxtbox.Text;
-            modiferConfig.ModuleName = moduleNameTxtbox.Text;
+            modifierConfig.GameName = gameNameTxtbox.Text;
+            modifierConfig.ProcessName = processNameTxtbox.Text;
+            modifierConfig.ModuleName = moduleNameTxtbox.Text;
 
             LoadVersions();//清空        
         }
@@ -107,9 +107,9 @@ namespace ModifierTool
                 MessageBox.Show("游戏名称，进程名称，模块名称不能为空");
                 return false;
             }
-            modiferConfig.GameName = gameNameTxtbox.Text;
-            modiferConfig.ProcessName = processNameTxtbox.Text;
-            modiferConfig.ModuleName = moduleNameTxtbox.Text;
+            modifierConfig.GameName = gameNameTxtbox.Text;
+            modifierConfig.ProcessName = processNameTxtbox.Text;
+            modifierConfig.ModuleName = moduleNameTxtbox.Text;
 
             if (fileName != null && fileName != "")
             {
@@ -117,8 +117,8 @@ namespace ModifierTool
                 StreamWriter writer = new StreamWriter(fileName);
                 if (writer != null)
                 {
-                    System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModiferConfig));
-                    xr.Serialize(writer, modiferConfig);
+                    System.Xml.Serialization.XmlSerializer xr = new System.Xml.Serialization.XmlSerializer(typeof(ModifierConfig));
+                    xr.Serialize(writer, modifierConfig);
                     //加密
                     writer.Close();
                     return true;
@@ -173,7 +173,7 @@ namespace ModifierTool
 
         private void LoadPages()
         {
-            var pages = modiferConfig.Versions[GetVersionIndex()].Pages;
+            var pages = modifierConfig.Versions[GetVersionIndex()].Pages;
             tabPannel.TabPages.Clear();
             if (pages != null)
             {               
@@ -193,7 +193,7 @@ namespace ModifierTool
             if (currentPage != null)
             {
                 currentPage.Controls.Add(gridView);
-                var functionItems = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items;
+                var functionItems = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items;
 
                 gridView.Rows.Clear();
                 if (functionItems != null)
@@ -203,7 +203,7 @@ namespace ModifierTool
                     {
                         gridView.Rows.Add(
                             item.Name,
-                            item.Address.GetAddrString(modiferConfig.ModuleName),
+                            item.Address.GetAddrString(modifierConfig.ModuleName),
                             item.ValueType,
                             item.ReadOnly,
                             (item.MaxValue == double.MaxValue ? "(none)" : item.MaxValue.ToString()),
@@ -223,7 +223,7 @@ namespace ModifierTool
             versionCombox.Items.Clear();
             tabPannel.TabPages.Clear();
             md5txtbox.Text = "";
-            var versions = modiferConfig.Versions;
+            var versions = modifierConfig.Versions;
             if (versions != null)
             {
                 foreach (var version in versions)
@@ -244,15 +244,15 @@ namespace ModifierTool
 
         private void addVersionBtn_Click(object sender, EventArgs e)
         {
-            if (modiferConfig.Versions == null)
+            if (modifierConfig.Versions == null)
             {
-                modiferConfig.Versions = new List<Version>();
+                modifierConfig.Versions = new List<Version>();
             }
             //先寻找有没有MD5相同的
             var version = UpdateVersionBox.UpdateVersion();
             if (version != null)
             {
-                foreach (var ver in modiferConfig.Versions)
+                foreach (var ver in modifierConfig.Versions)
                 {
                     if (ver.FileMd5 == version.FileMd5)
                     {
@@ -260,7 +260,7 @@ namespace ModifierTool
                         return;
                     }
                 }
-                modiferConfig.Versions.Add(version);
+                modifierConfig.Versions.Add(version);
                 LoadVersions();
             }         
         }
@@ -270,7 +270,7 @@ namespace ModifierTool
             int index = GetVersionIndex();
             if (index >= 0)
             {
-                var currentVersion = modiferConfig.Versions[index];
+                var currentVersion = modifierConfig.Versions[index];
                 if (currentVersion != null)
                 {
                     UpdateVersionBox.UpdateVersion(currentVersion);
@@ -292,10 +292,10 @@ namespace ModifierTool
             {
                 if (MessageBox.Show("确定要删除当前版本吗", "注意：", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    var version = modiferConfig.Versions[GetVersionIndex()];
+                    var version = modifierConfig.Versions[GetVersionIndex()];
                     if (version != null)
                     {
-                        modiferConfig.Versions.Remove(version);
+                        modifierConfig.Versions.Remove(version);
                         LoadVersions();
                     }
                     else
@@ -309,12 +309,12 @@ namespace ModifierTool
         private void 新建页面ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var newPage = new FunctionPage { Name = "新建页面" };
-            modiferConfig.Versions[GetVersionIndex()].Pages.Add(newPage);
+            modifierConfig.Versions[GetVersionIndex()].Pages.Add(newPage);
             tabPannel.TabPages.Add(newPage.Name);    
         }
         private void 重命名ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var page = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()];
+            var page = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()];
             var newName = Interaction.InputBox("输入页面名称", "重命名", page.Name);
             if (newName != "")
             {
@@ -332,12 +332,12 @@ namespace ModifierTool
         private void 新建元素ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var item = UpdateFunctionItemBox.UpdateFunctionItem();
-            if (modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items == null)
-                modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items = new List<FunctionItem>();
+            if (modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items == null)
+                modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items = new List<FunctionItem>();
 
             if (item != null)
             {
-                modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items.Add(item);
+                modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items.Add(item);
                 LoadItems();
             }
         }
@@ -345,7 +345,7 @@ namespace ModifierTool
         {
             if (focusRowIndex >=0)
             {
-                var item = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[focusRowIndex];
+                var item = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[focusRowIndex];
                 if (item != null)
                 {
                     UpdateFunctionItemBox.UpdateFunctionItem(item);
@@ -357,12 +357,12 @@ namespace ModifierTool
         {
             if (focusRowIndex >= 0)
             {
-                var item = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[focusRowIndex];
+                var item = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[focusRowIndex];
                 if (item != null)
                 {
                     if (MessageBox.Show("确定要删除[" + item.Name + "]这个元素吗？","注意", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items.Remove(item);                        
+                        modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items.Remove(item);                        
                         LoadItems();
                         focusRowIndex = -1;
                     }
@@ -375,7 +375,7 @@ namespace ModifierTool
             int index = versionCombox.SelectedIndex;
             if (index >= 0)
             {
-                md5txtbox.Text = modiferConfig.Versions[index].FileMd5;
+                md5txtbox.Text = modifierConfig.Versions[index].FileMd5;
                 LoadPages();
             }
         }
@@ -391,13 +391,13 @@ namespace ModifierTool
                 int columnIndex = e.ColumnIndex;
                 if (columnIndex == 1)
                 {
-                    var item = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex];
+                    var item = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex];
                     UpdateMemoryAddressBox.UpdateMemoryAddress(item.Address);
                     LoadItems();
                 }
                 else if(columnIndex == 8)
                 {
-                    var item = modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex];
+                    var item = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex];
                     if (item.FormStyle == "下拉列表")
                     {                        
                         UpdateValueStringMapBox.UpdateValueStringMap(item.ValueStringMap);
@@ -424,7 +424,7 @@ namespace ModifierTool
         {
             if (GetPageIndex() >= 0 && GetVersionIndex() >= 0)
             {
-                modiferConfig.ModuleName = moduleNameTxtbox.Text;
+                modifierConfig.ModuleName = moduleNameTxtbox.Text;
                 LoadItems();
             }
         }
@@ -447,12 +447,12 @@ namespace ModifierTool
                     }
                     else
                     {
-                        modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex].Name = name;
+                        modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex].Name = name;
                     }
                 }
                 else if (colunmIndex == 3)
                 {
-                    modiferConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex].ReadOnly = bool.Parse(gridView.Rows[e.RowIndex].Cells[colunmIndex].Value.ToString());
+                    modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex].ReadOnly = bool.Parse(gridView.Rows[e.RowIndex].Cells[colunmIndex].Value.ToString());
                 }
             }            
         }
@@ -473,7 +473,7 @@ namespace ModifierTool
 
         private void 新建ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (modiferConfig.Versions != null && modiferConfig.Versions.Count > 0)
+            if (modifierConfig.Versions != null && modifierConfig.Versions.Count > 0)
             {
                 SaveFile(FileName);
             }
@@ -492,7 +492,7 @@ namespace ModifierTool
         }
         private void 保存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (modiferConfig.Versions != null && modiferConfig.Versions.Count > 0)
+            if (modifierConfig.Versions != null && modifierConfig.Versions.Count > 0)
             {
                 bool res = SaveFile(FileName);
                 if (res == true)
@@ -511,7 +511,7 @@ namespace ModifierTool
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {            
-            if (modiferConfig.Versions != null && modiferConfig.Versions.Count > 0)
+            if (modifierConfig.Versions != null && modifierConfig.Versions.Count > 0)
             {
                 if (FileName != null)
                 {

@@ -232,7 +232,6 @@
             "System.Byte",
             "System.Int16",
             "System.Int32",
-            "System.Int64",
             "System.Single",
             "System.Double",
             "System.String"});

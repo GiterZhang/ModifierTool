@@ -198,9 +198,13 @@ namespace ModifierTool
             if (selectedText == "下拉列表")
             {
                 editMapBtn.Enabled = true;
+                readOnlyCheckbox.Checked = false;
+                readOnlyCheckbox.Enabled = false;
+
             }
             else
             {
+                readOnlyCheckbox.Enabled = true;
                 editMapBtn.Enabled = false;
             }
         }
