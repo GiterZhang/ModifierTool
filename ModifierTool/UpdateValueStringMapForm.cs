@@ -69,7 +69,7 @@ namespace ModifierTool
                             var line = str.Split(ValueStringMap.Separator.ToArray());
                             try
                             {
-                                map_temp.Add(line[0], line[2]);
+                                map_temp.Add(int.Parse(line[0]).ToString(), line[2]);
                             }
                             catch { }                            
                         }

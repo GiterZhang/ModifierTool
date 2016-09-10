@@ -127,6 +127,7 @@ namespace ModifierTool
             else
             {
                 SaveFileDialog fileDialog = new SaveFileDialog();
+                fileDialog.Filter = "修改器脚本文件(*.msf)|*.msf";       //设置过滤器
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     FileName = fileDialog.FileName;
@@ -483,6 +484,7 @@ namespace ModifierTool
         private void 打开ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "修改器脚本文件(*.msf)|*.msf";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 FileName = fileDialog.FileName;
@@ -520,6 +522,7 @@ namespace ModifierTool
                 else if (MessageBox.Show("需要保存文档吗？", "注意：", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     SaveFile(FileName);
+                    
                 }                
             }
         }
