@@ -25,28 +25,29 @@ namespace ModifierTool
                 item = value;
                 item_temp = value;
                 if (value != null)
-                {                   
-                    this.functionNameTxtbox.Text = item.Name;                   
+                {
+                    this.functionNameTxtbox.Text = item.Name;
                     this.addressTxtbox.Text = item.Address.GetAddrString();
+                    this.startPlaceCmbx.Text = item.StartPlace.ToString();
                     this.readOnlyCheckbox.Checked = item.ReadOnly;
                     this.arraySizeTxtbox.Text = item.Size.ToString();
 
-                    if (item.MaxValue != double.MaxValue)
+                    if (item.MaxValue != int.MaxValue)
                     {
                         this.maxValueTxtbox.Text = item.MaxValue.ToString();
                     }
-                    if (item.MinValue != double.MinValue)
+                    if (item.MinValue != int.MinValue)
                     {
                         this.minValueTxtbox.Text = item.MinValue.ToString();
                     }
-                   
+
                     this.formStyleCombox.Text = item.FormStyle;
-                    this.valueTypeCombox.Text = item.ValueType;
+                    this.valueTypeCombox.Text = (item.ValueType == "System.Boolean" ? "System.Binary" : item.ValueType);
                 }
                 else
                 {
                     item_temp = new FunctionItem();
-                }               
+                }
             }
         }
 
@@ -57,13 +58,13 @@ namespace ModifierTool
 
         private void UpdateFunctionItemForm_Load(object sender, EventArgs e)
         {
-                
+
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if(Submit(item_temp))
-                Close();                             
+            if (Submit(item_temp))
+                Close();
         }
         private bool Check()
         {
@@ -92,6 +93,16 @@ namespace ModifierTool
                 MessageBox.Show("未设置值映射关系");
                 return false;
             }
+            if (valueTypeCombox.Text == "System.Binary" && startPlaceCmbx.Text == "")
+            {
+                MessageBox.Show("没有设置起始位置");
+                return false;
+            }
+            if ((valueTypeCombox.Text == "System.String" || valueTypeCombox.Text == "System.Byte[]") && arraySizeTxtbox.Text == "")
+            {
+                MessageBox.Show("未设置数组长度");
+                return false;
+            }
             return true;
             
         }
@@ -104,15 +115,16 @@ namespace ModifierTool
                     item.Name = functionNameTxtbox.Text;
 
                     if (maxValueTxtbox.Text != "")
-                        item.MaxValue = double.Parse(maxValueTxtbox.Text);
+                        item.MaxValue = int.Parse(maxValueTxtbox.Text);
                     else
-                        item.MaxValue = double.MaxValue;
+                        item.MaxValue = int.MaxValue;
 
                     if (minValueTxtbox.Text != "")
-                        item.MinValue = double.Parse(minValueTxtbox.Text);
+                        item.MinValue = int.Parse(minValueTxtbox.Text);
                     else
-                        item.MinValue = double.MinValue;
+                        item.MinValue = int.MinValue;
 
+                    
                     item.ReadOnly = readOnlyCheckbox.Checked;
                     item.FormStyle = formStyleCombox.Text;
 
@@ -122,7 +134,13 @@ namespace ModifierTool
                     if (arraySizeTxtbox.Text != "")
                         item.Size = int.Parse(arraySizeTxtbox.Text);
 
-                    item.ValueType = valueTypeCombox.Text;
+                    if (startPlaceCmbx.Text != "")
+                        item.StartPlace = int.Parse(startPlaceCmbx.Text);
+
+                    string valueTypeStr = valueTypeCombox.Text;
+                    valueTypeStr = (valueTypeStr == "System.Binary" ? "System.Boolean" : valueTypeStr);//转换Binary数据类型
+
+                    item.ValueType = valueTypeStr;
 
                     if (item.MaxValue > item.MinValue)
                     {
@@ -154,8 +172,27 @@ namespace ModifierTool
             string selectedText = valueTypeCombox.Text;
             switch (selectedText)
             {
+                case "System.Binary":
+                    startPlaceCmbx.Enabled = true;
+                    arraySizeTxtbox.Enabled = false;
+
+                    readOnlyCheckbox.Enabled = true;
+
+                    maxValueTxtbox.Text = "";
+                    maxValueTxtbox.Enabled = false;
+                    minValueTxtbox.Text = "";
+                    minValueTxtbox.Enabled = false;
+
+                    formStyleCombox.Enabled = false;
+                    formStyleCombox.Text = "单选框";
+                    break;
+
                 case "System.String":
+                    startPlaceCmbx.Enabled = false;
+                    startPlaceCmbx.SelectedIndex = -1;
+
                     arraySizeTxtbox.Enabled = true;
+
                     maxValueTxtbox.Text = "";
                     maxValueTxtbox.Enabled = false;
                     minValueTxtbox.Text = "";
@@ -164,35 +201,53 @@ namespace ModifierTool
                     formStyleCombox.Enabled = false;
                     formStyleCombox.Text = "文本框";
                     break;
+
                 case "System.Double":
+                    startPlaceCmbx.Enabled = false;
+                    startPlaceCmbx.SelectedIndex = -1;
+
                     arraySizeTxtbox.Text = "";
                     arraySizeTxtbox.Enabled = false;
+
                     maxValueTxtbox.Enabled = true;
                     minValueTxtbox.Enabled = true;
 
                     formStyleCombox.Enabled = false;
                     formStyleCombox.Text = "文本框";
                     break;
+
                 case "System.Single":
+                    startPlaceCmbx.Enabled = false;
+                    startPlaceCmbx.SelectedIndex = -1;
+
                     arraySizeTxtbox.Text = "";
                     arraySizeTxtbox.Enabled = false;
+
                     maxValueTxtbox.Enabled = true;
                     minValueTxtbox.Enabled = true;
 
                     formStyleCombox.Enabled = false;
                     formStyleCombox.Text = "文本框";
                     break;
+
                 default:
-                    arraySizeTxtbox.Text = "";
+                    startPlaceCmbx.Enabled = false;
+                    startPlaceCmbx.SelectedIndex = -1;
+
                     arraySizeTxtbox.Enabled = false;
+                    arraySizeTxtbox.Text = "";
+
                     maxValueTxtbox.Enabled = true;
                     minValueTxtbox.Enabled = true;
+
                     formStyleCombox.Enabled = true;
+
+                    formStyleCombox.Text = "文本框";
                     break;
             }
         }
 
-        private void formStyleCombox_TextChanged(object sender, EventArgs e)
+        private void formStyleCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedText = formStyleCombox.Text;
             if (selectedText == "下拉列表")
@@ -200,7 +255,10 @@ namespace ModifierTool
                 editMapBtn.Enabled = true;
                 readOnlyCheckbox.Checked = false;
                 readOnlyCheckbox.Enabled = false;
-
+            }
+            else if (selectedText == "单选框")
+            {
+                valueTypeCombox.Text = "System.Binary";
             }
             else
             {
@@ -225,6 +283,8 @@ namespace ModifierTool
                 return;
             }
         }
+
+        
     }
     public static class UpdateFunctionItemBox
     {

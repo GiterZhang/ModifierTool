@@ -17,11 +17,15 @@ namespace ModifierTool
         [XmlElement]
         public bool ReadOnly { get; set; }
         [XmlElement]
-        public double MaxValue { get; set; }
+        public int MaxValue { get; set; }
         [XmlElement]
-        public double MinValue { get; set; }
+        public int MinValue { get; set; }
         [XmlElement]
         public int Size { get; set; }
+
+        //只有System.Binary才有的属性 起始位的位置
+        [XmlElement]
+        public int StartPlace { get; set; }
         [XmlElement]
         public string FormStyle { get; set; }
 

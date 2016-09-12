@@ -48,6 +48,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.valueTypeCombox = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.startPlaceCmbx = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // functionNameTxtbox
@@ -158,17 +160,18 @@
             this.formStyleCombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.formStyleCombox.FormattingEnabled = true;
             this.formStyleCombox.Items.AddRange(new object[] {
+            "单选框",
             "文本框",
             "下拉列表"});
             this.formStyleCombox.Location = new System.Drawing.Point(94, 236);
             this.formStyleCombox.Name = "formStyleCombox";
             this.formStyleCombox.Size = new System.Drawing.Size(164, 20);
             this.formStyleCombox.TabIndex = 13;
-            this.formStyleCombox.TextChanged += new System.EventHandler(this.formStyleCombox_TextChanged);
+            this.formStyleCombox.SelectedIndexChanged += new System.EventHandler(this.formStyleCombox_SelectedIndexChanged);
             // 
             // editAddressBtn
             // 
-            this.editAddressBtn.Location = new System.Drawing.Point(264, 95);
+            this.editAddressBtn.Location = new System.Drawing.Point(270, 95);
             this.editAddressBtn.Name = "editAddressBtn";
             this.editAddressBtn.Size = new System.Drawing.Size(61, 23);
             this.editAddressBtn.TabIndex = 14;
@@ -196,7 +199,7 @@
             // editMapBtn
             // 
             this.editMapBtn.Enabled = false;
-            this.editMapBtn.Location = new System.Drawing.Point(264, 234);
+            this.editMapBtn.Location = new System.Drawing.Point(270, 235);
             this.editMapBtn.Name = "editMapBtn";
             this.editMapBtn.Size = new System.Drawing.Size(61, 23);
             this.editMapBtn.TabIndex = 17;
@@ -206,7 +209,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(159, 278);
+            this.button3.Location = new System.Drawing.Point(166, 278);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 18;
@@ -216,7 +219,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(250, 278);
+            this.button4.Location = new System.Drawing.Point(256, 278);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 19;
@@ -229,6 +232,7 @@
             this.valueTypeCombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.valueTypeCombox.FormattingEnabled = true;
             this.valueTypeCombox.Items.AddRange(new object[] {
+            "System.Binary",
             "System.Byte",
             "System.Int16",
             "System.Int32",
@@ -241,12 +245,41 @@
             this.valueTypeCombox.TabIndex = 20;
             this.valueTypeCombox.SelectedIndexChanged += new System.EventHandler(this.valueTypeCombox_SelectedIndexChanged);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(262, 69);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(41, 12);
+            this.label9.TabIndex = 22;
+            this.label9.Text = "start:";
+            // 
+            // startPlaceCmbx
+            // 
+            this.startPlaceCmbx.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.startPlaceCmbx.FormattingEnabled = true;
+            this.startPlaceCmbx.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"});
+            this.startPlaceCmbx.Location = new System.Drawing.Point(300, 66);
+            this.startPlaceCmbx.Name = "startPlaceCmbx";
+            this.startPlaceCmbx.Size = new System.Drawing.Size(31, 20);
+            this.startPlaceCmbx.TabIndex = 23;
+            // 
             // UpdateFunctionItemForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(350, 325);
+            this.ClientSize = new System.Drawing.Size(357, 325);
             this.ControlBox = false;
+            this.Controls.Add(this.startPlaceCmbx);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.valueTypeCombox);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -298,5 +331,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.ComboBox valueTypeCombox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox startPlaceCmbx;
     }
 }

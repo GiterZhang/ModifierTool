@@ -205,10 +205,10 @@ namespace ModifierTool
                         gridView.Rows.Add(
                             item.Name,
                             item.Address.GetAddrString(modifierConfig.ModuleName),
-                            item.ValueType,
+                            (item.ValueType == "System.Boolean" ? "System.Binary" : item.ValueType),
                             item.ReadOnly,
-                            (item.MaxValue == double.MaxValue ? "(none)" : item.MaxValue.ToString()),
-                            (item.MinValue == double.MinValue ? "(none)" : item.MinValue.ToString()),
+                            (item.MaxValue == int.MaxValue ? "(none)" : item.MaxValue.ToString()),
+                            (item.MinValue == int.MinValue ? "(none)" : item.MinValue.ToString()),
                             (item.Size == 0 ? "(none)" : item.Size.ToString()),
                             item.FormStyle,
                             "编辑"
@@ -387,7 +387,11 @@ namespace ModifierTool
             {
                 focusRowIndex = e.RowIndex;
             }               
-            else if(e.RowIndex >= 0)
+        }
+
+        private void gridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex >= 0)
             {
                 int columnIndex = e.ColumnIndex;
                 if (columnIndex == 1)
@@ -396,11 +400,11 @@ namespace ModifierTool
                     UpdateMemoryAddressBox.UpdateMemoryAddress(item.Address);
                     LoadItems();
                 }
-                else if(columnIndex == 8)
+                else if (columnIndex == 8)
                 {
                     var item = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items[e.RowIndex];
                     if (item.FormStyle == "下拉列表")
-                    {                        
+                    {
                         UpdateValueStringMapBox.UpdateValueStringMap(item.ValueStringMap);
                         LoadItems();
                     }
@@ -408,7 +412,7 @@ namespace ModifierTool
                     {
                         MessageBox.Show("非下拉列表，没有值串映射");
                     }
-                    
+
                 }
             }
         }
@@ -526,5 +530,6 @@ namespace ModifierTool
                 }                
             }
         }
+      
     }
 }
