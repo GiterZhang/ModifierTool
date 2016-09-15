@@ -42,7 +42,7 @@ namespace ModifierTool
                     }
 
                     this.formStyleCombox.Text = item.FormStyle;
-                    this.valueTypeCombox.Text = (item.ValueType == "System.Boolean" ? "System.Binary" : item.ValueType);
+                    this.valueTypeCombox.Text = (item.ValueType == "System.Int64" ? "System.Binary" : item.ValueType);
                 }
                 else
                 {
@@ -95,12 +95,17 @@ namespace ModifierTool
             }
             if (valueTypeCombox.Text == "System.Binary" && startPlaceCmbx.Text == "")
             {
-                MessageBox.Show("没有设置起始位置");
+                MessageBox.Show("未设置起始位置");
                 return false;
             }
-            if ((valueTypeCombox.Text == "System.String" || valueTypeCombox.Text == "System.Byte[]") && arraySizeTxtbox.Text == "")
+            if ((valueTypeCombox.Text == "System.String" || valueTypeCombox.Text == "System.Byte[]" || valueTypeCombox.Text == "System.Binary") && arraySizeTxtbox.Text == "")
             {
-                MessageBox.Show("未设置数组长度");
+                MessageBox.Show("未设置长度");
+                return false;
+            }
+            if (valueTypeCombox.Text == "System.Binary" && (formStyleCombox.Text == "单选框" && arraySizeTxtbox.Text != "1") || (formStyleCombox.Text != "单选框" && arraySizeTxtbox.Text == "1"))
+            {
+                MessageBox.Show("长度应为1或控件类型应为单选框");
                 return false;
             }
             return true;
@@ -132,13 +137,26 @@ namespace ModifierTool
                         item.ValueStringMap = null;
 
                     if (arraySizeTxtbox.Text != "")
-                        item.Size = int.Parse(arraySizeTxtbox.Text);
-
+                    {
+                        int size = int.Parse(arraySizeTxtbox.Text);
+                        if (size < 1)
+                        {
+                            MessageBox.Show("长度应大于0");
+                            return false;
+                        }
+                        if (valueTypeCombox.Text == "System.Binary" && size > 64)
+                        {
+                            MessageBox.Show("最大不能超过64位");
+                            return false;
+                        }
+                        item.Size = size;
+                    }
+                        
                     if (startPlaceCmbx.Text != "")
                         item.StartPlace = int.Parse(startPlaceCmbx.Text);
 
                     string valueTypeStr = valueTypeCombox.Text;
-                    valueTypeStr = (valueTypeStr == "System.Binary" ? "System.Boolean" : valueTypeStr);//转换Binary数据类型
+                    valueTypeStr = (valueTypeStr == "System.Binary" ? "System.Int64" : valueTypeStr);//转换Binary数据类型
 
                     item.ValueType = valueTypeStr;
 
@@ -174,17 +192,14 @@ namespace ModifierTool
             {
                 case "System.Binary":
                     startPlaceCmbx.Enabled = true;
-                    arraySizeTxtbox.Enabled = false;
+                    arraySizeTxtbox.Enabled = true;
 
                     readOnlyCheckbox.Enabled = true;
 
-                    maxValueTxtbox.Text = "";
-                    maxValueTxtbox.Enabled = false;
-                    minValueTxtbox.Text = "";
-                    minValueTxtbox.Enabled = false;
+                    maxValueTxtbox.Enabled = true;
+                    minValueTxtbox.Enabled = true;
 
-                    formStyleCombox.Enabled = false;
-                    formStyleCombox.Text = "单选框";
+                    formStyleCombox.Enabled = true;
                     break;
 
                 case "System.String":
@@ -259,6 +274,7 @@ namespace ModifierTool
             else if (selectedText == "单选框")
             {
                 valueTypeCombox.Text = "System.Binary";
+                arraySizeTxtbox.Text = "1";
             }
             else
             {
@@ -284,7 +300,13 @@ namespace ModifierTool
             }
         }
 
-        
+        private void arraySizeTxtbox_TextChanged(object sender, EventArgs e)
+        {
+            if (arraySizeTxtbox.Text == "1" && valueTypeCombox.Text == "System.Binary")
+            {
+                formStyleCombox.Text = "单选框";
+            }
+        }
     }
     public static class UpdateFunctionItemBox
     {

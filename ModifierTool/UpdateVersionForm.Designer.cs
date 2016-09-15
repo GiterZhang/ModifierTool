@@ -116,6 +116,7 @@
             this.Controls.Add(this.textBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "UpdateVersionForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "版本信息";
             this.Load += new System.EventHandler(this.UpdateVersionForm_Load);
             this.ResumeLayout(false);

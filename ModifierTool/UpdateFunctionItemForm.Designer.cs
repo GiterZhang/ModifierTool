@@ -97,7 +97,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(47, 137);
+            this.label4.Location = new System.Drawing.Point(47, 136);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 6;
@@ -182,19 +182,20 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(139, 136);
+            this.label8.Location = new System.Drawing.Point(164, 136);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(65, 12);
+            this.label8.Size = new System.Drawing.Size(41, 12);
             this.label8.TabIndex = 15;
-            this.label8.Text = "数组长度：";
+            this.label8.Text = "长度：";
             // 
             // arraySizeTxtbox
             // 
             this.arraySizeTxtbox.Location = new System.Drawing.Point(210, 133);
-            this.arraySizeTxtbox.MaxLength = 3;
+            this.arraySizeTxtbox.MaxLength = 2;
             this.arraySizeTxtbox.Name = "arraySizeTxtbox";
             this.arraySizeTxtbox.Size = new System.Drawing.Size(48, 21);
             this.arraySizeTxtbox.TabIndex = 16;
+            this.arraySizeTxtbox.TextChanged += new System.EventHandler(this.arraySizeTxtbox_TextChanged);
             // 
             // editMapBtn
             // 
@@ -302,6 +303,7 @@
             this.Controls.Add(this.functionNameTxtbox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "UpdateFunctionItemForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "元素信息";
             this.Load += new System.EventHandler(this.UpdateFunctionItemForm_Load);
             this.ResumeLayout(false);

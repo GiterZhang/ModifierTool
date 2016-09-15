@@ -26,7 +26,7 @@ namespace ModifierTool
             string addrString = "";
 
             if (IsContainModuleAddr)
-                addrString = string.Format("[{0}+{1}]", moduleName, Address.ToString("x2"));
+                addrString = string.Format("[{0} + {1}]", moduleName, Address.ToString("x2"));
             else
                 addrString = string.Format("[{0}]", Address.ToString("x2"));
 
@@ -34,7 +34,7 @@ namespace ModifierTool
             {
                 foreach (var offset in Offsets)
                 {
-                    addrString = string.Format("[{0}+{1}]",addrString, offset.ToString("x2"));
+                    addrString = string.Format("[{0} + {1}]",addrString, offset.ToString("x2"));
                 }
                 if (Offsets.Count == 0)
                 {

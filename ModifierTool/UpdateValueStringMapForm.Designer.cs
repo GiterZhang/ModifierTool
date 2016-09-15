@@ -72,6 +72,7 @@
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "UpdateValueStringMapForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "值串映射表";
             this.Load += new System.EventHandler(this.UpdateValueStringMapForm_Load);
             this.ResumeLayout(false);

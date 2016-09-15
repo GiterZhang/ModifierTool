@@ -118,6 +118,7 @@
             this.Controls.Add(this.addrTxtbox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "UpdateMemoryAddressForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "地址信息";
             this.Load += new System.EventHandler(this.MemoryAdressForm_Load);
             this.ResumeLayout(false);

@@ -200,12 +200,13 @@ namespace ModifierTool
                 if (functionItems != null)
                 {
                     ValueChangedFlag = ValueChangedFlag_Busy;
+                    int index = 0;
                     foreach (var item in functionItems)
                     {
                         gridView.Rows.Add(
                             item.Name,
                             item.Address.GetAddrString(modifierConfig.ModuleName),
-                            (item.ValueType == "System.Boolean" ? "System.Binary" : item.ValueType),
+                            (item.ValueType == "System.Int64" ? "System.Binary" : item.ValueType),
                             item.ReadOnly,
                             (item.MaxValue == int.MaxValue ? "(none)" : item.MaxValue.ToString()),
                             (item.MinValue == int.MinValue ? "(none)" : item.MinValue.ToString()),
@@ -213,11 +214,19 @@ namespace ModifierTool
                             item.FormStyle,
                             "编辑"
                             );
+
+                        if (item.FormStyle == "下拉列表")
+                        {
+                            gridView.Rows[index].Cells[3].ReadOnly = true;
+                            gridView.Rows[index].Cells[3].Style.BackColor = Color.WhiteSmoke;
+                        }
+                        index++;
                     }
                     //释放锁定，允许修改
                     ValueChangedFlag = ValueChangedFlag_Free;
                 }            
-            }                     
+            }
+            focusRowIndex = -1;                     
         }
         private void LoadVersions()
         {
@@ -261,6 +270,13 @@ namespace ModifierTool
                         return;
                     }
                 }
+
+                //新建版本的时候拷贝页面
+                if (modifierConfig.Versions.Count > 0)
+                {
+                    //待做
+                }
+
                 modifierConfig.Versions.Add(version);
                 LoadVersions();
             }         
@@ -323,6 +339,23 @@ namespace ModifierTool
                 tabPannel.SelectedTab.Text = page.Name;
             }
         }
+        private void 删除页ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var page = modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()];
+            if (page.Items == null)
+            {
+                modifierConfig.Versions[GetVersionIndex()].Pages.RemoveAt(GetPageIndex());
+                LoadPages();
+            }
+            else
+            {
+                if (MessageBox.Show("当前页面包含已编辑元素，确定要删除当前页面[" + page.Name + "]吗","注意：", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    modifierConfig.Versions[GetVersionIndex()].Pages.RemoveAt(GetPageIndex());
+                    LoadPages();
+                }
+            }
+        }
         private void 刷新页ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (GetPageIndex() >= 0 && GetVersionIndex() >= 0)
@@ -330,6 +363,13 @@ namespace ModifierTool
                 LoadItems();
             }
         }
+        private void 重排页面ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReSortPageBox.ReSortPage(modifierConfig.Versions[GetVersionIndex()].Pages);
+            LoadPages();
+        }
+
+
         private void 新建元素ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var item = UpdateFunctionItemBox.UpdateFunctionItem();
@@ -466,13 +506,13 @@ namespace ModifierTool
         {
             if (focusRowIndex != -1 && gridView.CurrentCell.ColumnIndex != 0 && gridView.CurrentCell.ColumnIndex != 3)
             {
-                contextMenu.Items[5].Visible = true;
                 contextMenu.Items[6].Visible = true;
+                contextMenu.Items[7].Visible = true;
             }
             else
             {
-                contextMenu.Items[5].Visible = false;
                 contextMenu.Items[6].Visible = false;
+                contextMenu.Items[7].Visible = false;
             }
         }
 
@@ -530,6 +570,7 @@ namespace ModifierTool
                 }                
             }
         }
-      
+
+        
     }
 }
