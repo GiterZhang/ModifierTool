@@ -50,11 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReSortPageForm.cs">
+    <Compile Include="ReSortForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReSortPageForm.Designer.cs">
-      <DependentUpon>ReSortPageForm.cs</DependentUpon>
+    <Compile Include="ReSortForm.Designer.cs">
+      <DependentUpon>ReSortForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UpdateMemoryAddressForm.cs">
       <SubType>Form</SubType>
@@ -96,8 +96,8 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReSortPageForm.resx">
-      <DependentUpon>ReSortPageForm.cs</DependentUpon>
+    <EmbeddedResource Include="ReSortForm.resx">
+      <DependentUpon>ReSortForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateMemoryAddressForm.resx">
       <DependentUpon>UpdateMemoryAddressForm.cs</DependentUpon>

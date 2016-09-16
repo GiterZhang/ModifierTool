@@ -1,6 +1,6 @@
 ﻿namespace ModifierTool
 {
-    partial class ReSortPageForm
+    partial class ReSortItemsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -74,7 +74,7 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // ReSortPageForm
+            // ReSortForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -85,9 +85,9 @@
             this.Controls.Add(this.raiseBtn);
             this.Controls.Add(this.listBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "ReSortPageForm";
+            this.Name = "ReSortForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "重排页面";
+            this.Text = "重排";
             this.Load += new System.EventHandler(this.ReSortPageForm_Load);
             this.ResumeLayout(false);
 

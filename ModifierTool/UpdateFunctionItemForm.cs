@@ -103,9 +103,14 @@ namespace ModifierTool
                 MessageBox.Show("未设置长度");
                 return false;
             }
-            if (valueTypeCombox.Text == "System.Binary" && (formStyleCombox.Text == "单选框" && arraySizeTxtbox.Text != "1") || (formStyleCombox.Text != "单选框" && arraySizeTxtbox.Text == "1"))
+            /*if (valueTypeCombox.Text == "System.Binary" && (formStyleCombox.Text == "单选框" && arraySizeTxtbox.Text != "1") || (formStyleCombox.Text != "单选框" && arraySizeTxtbox.Text == "1"))
             {
                 MessageBox.Show("长度应为1或控件类型应为单选框");
+                return false;
+            }*/
+            if (valueTypeCombox.Text == "System.Binary" && (formStyleCombox.Text == "单选框" && arraySizeTxtbox.Text != "1"))
+            {
+                MessageBox.Show("若控件类型为单选框时,Binary长度应为1");
                 return false;
             }
             return true;
@@ -200,6 +205,7 @@ namespace ModifierTool
                     minValueTxtbox.Enabled = true;
 
                     formStyleCombox.Enabled = true;
+                    formStyleCombox.Text = "文本框";
                     break;
 
                 case "System.String":
@@ -302,10 +308,17 @@ namespace ModifierTool
 
         private void arraySizeTxtbox_TextChanged(object sender, EventArgs e)
         {
-            if (arraySizeTxtbox.Text == "1" && valueTypeCombox.Text == "System.Binary")
+            try
             {
-                formStyleCombox.Text = "单选框";
+                if (valueTypeCombox.Text == "System.Binary")
+                {
+                    minValueTxtbox.Text = "0";
+
+                    long max = (1 << int.Parse(arraySizeTxtbox.Text)) - 1;
+                    maxValueTxtbox.Text = max.ToString();
+                }            
             }
+            catch { }
         }
     }
     public static class UpdateFunctionItemBox

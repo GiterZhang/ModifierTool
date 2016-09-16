@@ -49,6 +49,8 @@ namespace ModifierTool
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            label6.Text = "版本号：" + Application.ProductVersion;
+
             tabPannel.TabPages.Clear();
             if (!LoadFile(FileName))
             {
@@ -365,8 +367,13 @@ namespace ModifierTool
         }
         private void 重排页面ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ReSortPageBox.ReSortPage(modifierConfig.Versions[GetVersionIndex()].Pages);
+            ReSortBox.ReSort(modifierConfig.Versions[GetVersionIndex()].Pages);
             LoadPages();
+        }
+        private void 重排元素ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReSortBox.ReSort(modifierConfig.Versions[GetVersionIndex()].Pages[GetPageIndex()].Items);
+            LoadItems();
         }
 
 
